@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>4x4 스도쿠 아이템 설치 게임</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #f0f2f5; }
+        h1 { color: #333; }
+        #status { margin-bottom: 10px; font-weight: bold; color: #555; }
+        
+        /* 4x4 그리드 스타일 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 60px);
+            grid-template-rows: repeat(4, 60px);
+            gap: 5px;
+            border: 3px solid #333;
+            padding: 5px;
+            background-color: #fff;
+        }
+
+        .cell {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .cell:hover { background-color: #e9e9e9; }
+        .jewel { background-color: #d4f8ff; }
+        .bomb { background-color: #ffd4d4; }
+    </style>
+</head>
+<body>
+
+    <h1>4x4 Sudoku Item Placer</h1>
+    <div id="status">보석을 설치할 칸을 선택하세요 (1개)</div>
+    
+    <div class="grid" id="grid">
+        </div>
+
+    <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; cursor: pointer;">게임 초기화</button>
+
+    <script>
+        const grid = document.getElementById('grid');
+        const statusText = document.getElementById('status');
+        let clickCount = 0;
+
+        // 4x4 칸 생성
+        for (let i = 0; i < 16; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.addEventListener('click', () => handleCellClick(cell));
+            grid.appendChild(cell);
+        }
+
+        function handleCellClick(cell) {
+            // 이미 아이템이 설치된 칸은 무시
+            if (cell.textContent !== "") return;
+
+            if (clickCount === 0) {
+                // 1. 보석 설치
+                cell.textContent = "💎";
+                cell.classList.add('jewel');
+                statusText.textContent = "폭탄을 설치할 칸을 선택하세요 (2개 남음)";
+                clickCount++;
+            } else if (clickCount === 1 || clickCount === 2) {
+                // 2 & 3. 폭탄 설치
+                cell.textContent = "💣";
+                cell.classList.add('bomb');
+                clickCount++;
+                
+                if (clickCount === 2) {
+                    statusText.textContent = "폭탄을 설치할 칸을 선택하세요 (1개 남음)";
+                } else {
+                    statusText.textContent = "설치 완료! 스도쿠 게임을 시작하세요.";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
